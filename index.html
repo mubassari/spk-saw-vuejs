@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="bootstrap.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    <title>SPK Metode SAW</title>
+  </head>
+  <body>
+    <div id="saw">
+      <nav class="nav nav-tabs nav-fill pt-3">
+        <a
+          class="nav-link"
+          :class="{active: tabs[0]}"
+          href="#"
+          @click="openTabs(0)"
+          ><b>Bobot</b></a
+        >&nbsp;
+        <a
+          class="nav-link"
+          :class="{active: tabs[1]}"
+          href="#"
+          @click="openTabs(1)"
+          ><b>Kriteria</b></a
+        >&nbsp;
+        <a
+          class="nav-link"
+          :class="{active: tabs[2]}"
+          href="#"
+          @click="openTabs(2)"
+          ><b>Perhitungan</b></a
+        >
+      </nav>
+      <div class="container">
+        <div class="mt-3" id="bobot" v-if="tabs[0]">
+          <input
+            type="button"
+            class="btn btn-primary"
+            value="Tambah"
+            @click="addNewBobot"
+          />
+          <div v-for="(bbt, index) in bobot" class="row">
+            <div class="mt-3 col">
+              <div class="input-group">
+                <div class="input-group-text">Kriteria</div>
+                <input
+                  type="text"
+                  class="form-control"
+                  :class="{'is-invalid': checkNumber(bbt.name), '': !checkNumber(bbt.name)}"
+                  placeholder="Nama Kriteria"
+                  v-model="bbt.name"
+                />
+              </div>
+            </div>
+            <div class="mt-3 col">
+              <select
+                class="form-select"
+                v-model="bbt.attr"
+                :class="{'is-invalid': bbt.attr===0, '': bbt.attr!==0}"
+              >
+                <option selected disabled value="0">
+                  Pilih Atribut Kriteria
+                </option>
+                <option :selected="bbt.attr===1" value="1">Biaya</option>
+                <option :selected="bbt.attr===2" value="2">Keuntungan</option>
+              </select>
+            </div>
+            <div class="mt-3 col">
+              <div class="input-group">
+                <span class="input-group-text">Nilai</span>
+                <input
+                  type="number"
+                  class="form-control"
+                  :class="{'is-invalid': checkNumber(bbt.poin), '': !checkNumber(bbt.poin)}"
+                  placeholder="Poin Bobot"
+                  v-model="bbt.poin"
+                  min="1"
+                  max="100"
+                />
+                <span class="input-group-text">%</span>
+              </div>
+            </div>
+            <div class="mt-3 col-auto">
+              <input
+                type="button"
+                class="btn btn-primary"
+                value="Hapus"
+                @click="removeBobot(bobot, index)"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="mt-3" id="alter" v-if="tabs[1]">
+          <input
+            type="button"
+            class="btn btn-primary"
+            value="Tambah"
+            @click="addNewAlter"
+          />
+          <div v-for="(altr, index) in alter" class="row">
+            <div class="mt-3 col">
+              <label class="form-label">Alternatif</label>
+              <input
+                type="text"
+                class="form-control"
+                :class="{'is-invalid': checkNumber(altr.name),'': !checkNumber(altr.name)}"
+                placeholder="Nama Alternatif"
+                v-model="altr.name"
+              />
+            </div>
+            <div class="mt-3 col row" v-for="(bbt, index) in bobot">
+              <div class="col">
+                <label class="form-label">Nilai {{ bbt.name }}</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  :class="{'is-invalid': checkNumber(altr.kriteria[index]), '': !checkNumber(altr.kriteria[index])}"
+                  :placeholder="'Nilai Kriteria '+[[bbt.name]]"
+                  v-model.number="altr.kriteria[index]"
+                  min="1"
+                  max="100"
+                />
+              </div>
+            </div>
+            <div class="mt-1">
+              <input
+                type="button"
+                class="btn btn-primary"
+                value="Hapus"
+                @click="alter.splice(index, 1)"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="mt-3" id="hitung" v-if="tabs[2]">
+          <h3 class="text-center">Hasil Analisa</h3>
+          <table class="table table-sm table-hover table-bordered text-center">
+            <thead class="table-light align-middle">
+              <tr>
+                <th rowspan="2">Alternatif</th>
+                <th :colspan="bobot.length">Kriteria</th>
+              </tr>
+              <tr>
+                <th v-for="bbt in bobot">{{bbt.name}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="altr in alter" class="table table-hover">
+                <td>{{altr.name}}</td>
+                <td v-for="(bbt, ix) in bobot">{{altr.kriteria[ix]}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <h3 class="text-center">Normalisasi</h3>
+          <table class="table table-sm table-hover table-bordered text-center">
+            <thead class="table-light align-middle">
+              <tr>
+                <th rowspan="2">Alternatif</th>
+                <th :colspan="bobot.length">Kriteria</th>
+              </tr>
+              <tr>
+                <th v-for="bbt in bobot">{{bbt.name}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="altr in alter" class="table table-hover">
+                <td>{{altr.name}}</td>
+                <td v-for="(bbt, ix) in bobot">
+                  {{ hitungNormal(bbt.attr, altr.kriteria, ix).toFixed(2)}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h3 class="text-center">Perankingan</h3>
+          <table class="table table-sm table-hover table-bordered text-center">
+            <thead class="table-light align-middle">
+              <tr>
+                <th rowspan="2">Alternatif</th>
+                <th :colspan="bobot.length">Kriteria</th>
+                <th rowspan="2">Total</th>
+                <th rowspan="2">Ranking</th>
+              </tr>
+              <tr>
+                <th v-for="bbt in bobot">{{bbt.name}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(altr, index) in alter" class="table table-hover">
+                <td>{{altr.name}}</td>
+                <td v-for="(bbt, ix) in bobot">
+                  {{ (hitungNormal(bbt.attr, altr.kriteria, ix) * (bbt.poin /
+                  100)).toFixed(2)}}
+                </td>
+                <td>{{ hitungTotal(index).toFixed(3)}}</td>
+                <td>{{ getRank(index) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script src="vue.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
