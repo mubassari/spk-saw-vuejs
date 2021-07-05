@@ -1,20 +1,9 @@
 new Vue({
   el: "#saw",
   data: {
-    bobot: [
-      { name: "Kejujuran", attr: "2", poin: 35 },
-      { name: "Daya Tahan Kerja", attr: "2", poin: 25 },
-      { name: "Inisiatif", attr: "2", poin: 25 },
-      { name: "Ketelitian", attr: "2", poin: 15 },
-    ],
-    alter: [
-      { name: "Zain", kriteria: [80, 4, 75, 70], total: 0, rank: 0 },
-      { name: "Zian", kriteria: [80, 5, 75, 70], total: 0, rank: 0 },
-      { name: "Zafian", kriteria: [85, 4.5, 75, 75], total: 0, rank: 0 },
-      { name: "Lutfi", kriteria: [80, 3.5, 75, 70], total: 0, rank: 0 },
-      { name: "Rachel", kriteria: [85, 5, 70, 75], total: 0, rank: 0 },
-    ],
-    tabs: [false, false, true],
+    bobot: [],
+    alter: [],
+    tabs: [true, false, false],
     print: false,
   },
   methods: {
@@ -109,3 +98,6 @@ new Vue({
     },
   },
 });
+Vue.config.devtools = !false;
+Vue.config.debug = !false;
+Vue.config.silent = !true;
