@@ -10,7 +10,7 @@
   </head>
   <body>
     <div id="saw">
-      <nav class="nav nav-tabs nav-fill pt-3">
+      <nav class="nav nav-tabs nav-fill pt-3 fixed-top bg-light">
         <a
           class="nav-link"
           :class="{active: tabs[0]}"
@@ -33,7 +33,7 @@
           ><b>Perhitungan</b></a
         >
       </nav>
-      <div class="container">
+      <div class="container mt-5 pt-3">
         <div class="mt-3" id="bobot" v-if="tabs[0]">
           <input
             type="button"
@@ -187,7 +187,11 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(altr, index) in alter" class="table table-hover">
+              <tr
+                v-for="(altr, index) in alter"
+                class="table table-hover"
+                :style="altr.rank==1 ? 'font-weight:bold' : 'font-weight:normal'"
+              >
                 <td>{{altr.name}}</td>
                 <td v-for="(bbt, ix) in bobot">
                   {{ (hitungNormal(bbt.attr, altr.kriteria, ix) * (bbt.poin /
@@ -198,6 +202,11 @@
               </tr>
             </tbody>
           </table>
+          <p>
+            Jadi berdasarkan Perhitungan di atas, Alternatif terbaik adalah
+            <strong>{{ getHighestRank().name }}</strong> dengan total poin
+            <strong>{{ getHighestRank().total }}</strong>
+          </p>
         </div>
       </div>
     </div>

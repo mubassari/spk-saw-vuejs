@@ -8,11 +8,11 @@ var saw = new Vue({
       { id: 3, name: "Ketelitian", attr: "2", poin: 15 },
     ],
     alter: [
-      { id: 0, name: "Zain", kriteria: [80, 4, 75, 70] },
-      { id: 1, name: "Zian", kriteria: [80, 5, 75, 70] },
-      { id: 2, name: "Zafian", kriteria: [85, 4.5, 75, 75] },
-      { id: 3, name: "Lutfi", kriteria: [80, 3.5, 75, 70] },
-      { id: 4, name: "Rachel", kriteria: [85, 5, 70, 75] },
+      { id: 0, name: "Zain", kriteria: [80, 4, 75, 70], total: 0, rank: 0 },
+      { id: 1, name: "Zian", kriteria: [80, 5, 75, 70], total: 0, rank: 0 },
+      { id: 2, name: "Zafian", kriteria: [85, 4.5, 75, 75], total: 0, rank: 0 },
+      { id: 3, name: "Lutfi", kriteria: [80, 3.5, 75, 70], total: 0, rank: 0 },
+      { id: 4, name: "Rachel", kriteria: [85, 5, 70, 75], total: 0, rank: 0 },
     ],
     tabs: [false, false, true],
     nextBobot: 4,
@@ -37,12 +37,14 @@ var saw = new Vue({
         id: this.nextAlter++,
         name: "",
         kriteria: Array(this.bobot.length).fill(""),
+        total: 0,
+        rank: 0,
       });
     },
     removeBobot: function (data, i) {
       data.splice(i, 1);
       if (this.alter.length !== 0) {
-        this.alter.forEach(function (alt, i) {
+        this.alter.forEach(function (alt) {
           alt.kriteria.splice(i, 1);
         });
       }
@@ -84,13 +86,14 @@ var saw = new Vue({
           saw.hitungNormal(bbt.attr, saw.alter[i].kriteria, ix) *
           (bbt.poin / 100);
       });
+      saw.alter[i].total = total;
       return total;
     },
     getRank: function (index) {
       let arr = [];
       let saw = this;
-      this.alter.forEach(function (el, i) {
-        arr.push(saw.hitungTotal(i));
+      this.alter.forEach(function (el) {
+        arr.push(el.total);
       });
       var hasil = arr.map(function (v) {
         return (
@@ -102,7 +105,13 @@ var saw = new Vue({
             .indexOf(v) + 1
         );
       });
+      saw.alter[index].rank = hasil[index];
       return hasil[index];
+    },
+    getHighestRank: function () {
+      return this.alter.filter(function (y) {
+        return y.rank === 1;
+      })[0];
     },
   },
 });
