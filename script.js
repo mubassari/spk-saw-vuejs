@@ -5,6 +5,15 @@ new Vue({
     alter: [],
     tabs: [true, false, false],
     print: false,
+    loader: true,
+  },
+  mounted: function () {
+    setTimeout(
+      function () {
+        this.loader = false;
+      }.bind(this),
+      1000
+    );
   },
   methods: {
     addNewBobot: function () {
@@ -45,15 +54,19 @@ new Vue({
       });
     },
     hitungNormal: function (bbt, altr, ix) {
-      let minMax = [];
-      this.alter.forEach(function (el) {
-        minMax.push(el.kriteria[ix]);
-      });
-      return bbt == 2
-        ? altr[ix] / Math.max(...minMax)
-        : bbt == 1
-        ? Math.min(...minMax) / altr[ix]
-        : false;
+      if (this.alter.length === 0 || this.bobot.length === 0) {
+        return 0.0;
+      } else {
+        let minMax = [];
+        this.alter.forEach(function (el) {
+          minMax.push(el.kriteria[ix]);
+        });
+        return bbt == 2
+          ? (altr[ix] / Math.max(...minMax)).toFixed(2)
+          : bbt == 1
+          ? (Math.min(...minMax) / altr[ix]).toFixed(2)
+          : false;
+      }
     },
     hitungTotal: function (i) {
       let total = 0;
@@ -85,9 +98,24 @@ new Vue({
       return hasil[index];
     },
     getHighestRank: function () {
-      return this.alter.filter(function (y) {
-        return y.rank === 1;
-      })[0];
+      if (this.alter.length === 0 || this.bobot.length === 0) {
+        return 0;
+      } else {
+        let rank = Array();
+        rank.push(
+          this.alter.filter(function (y) {
+            return y.rank === 1;
+          })[0]
+        );
+        rank.push(
+          this.alter
+            .map(function (e) {
+              return e.rank;
+            })
+            .indexOf(1) + 1
+        );
+        return rank;
+      }
     },
     printData: function () {
       this.print = true;
@@ -98,6 +126,7 @@ new Vue({
     },
   },
 });
-Vue.config.devtools = !false;
-Vue.config.debug = !false;
-Vue.config.silent = !true;
+Vue.config.devtools = false;
+Vue.config.debug = false;
+Vue.config.silent = true;
+Vue.config.productionTip = false;
