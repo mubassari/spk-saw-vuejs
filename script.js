@@ -7,6 +7,11 @@ new Vue({
     print: false,
     loader: true,
   },
+  computed: {
+    dataEmpty: function () {
+      return !this.bobot.length ? true : !this.alter.length ? true : false;
+    },
+  },
   mounted: function () {
     setTimeout(
       function () {

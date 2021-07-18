@@ -47,7 +47,7 @@
             >&nbsp;
             <a
               class="nav-link"
-              :class="{'active text-dark': tabs[2], 'text-secondary': !tabs[2]}"
+              :class="{'active text-dark': tabs[2], 'text-secondary': !tabs[2], 'disabled': dataEmpty}"
               href="#"
               @click="openTabs(2)"
               ><b>Perhitungan</b></a
