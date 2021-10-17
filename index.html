@@ -33,27 +33,31 @@
           >
             <a
               class="nav-link"
-              :class="{'active text-dark': tabs[0], 'text-secondary': !tabs[0]}"
+              :class="{ 'active text-dark': tabs[0], 'text-secondary': !tabs[0] }"
               href="#"
               @click="openTabs(0)"
               ><b>Bobot</b></a
             >&nbsp;
             <a
               class="nav-link"
-              :class="{'active text-dark': tabs[1], 'text-secondary': !tabs[1]}"
+              :class="{ 'active text-dark': tabs[1], 'text-secondary': !tabs[1] }"
               href="#"
               @click="openTabs(1)"
               ><b>Kriteria</b></a
             >&nbsp;
             <a
               class="nav-link"
-              :class="{'active text-dark': tabs[2], 'text-secondary': !tabs[2], 'disabled': dataEmpty}"
+              :class="{
+                'active text-dark': tabs[2],
+                'text-secondary': !tabs[2],
+                disabled: dataEmpty,
+              }"
               href="#"
               @click="openTabs(2)"
               ><b>Perhitungan</b></a
             >
           </nav>
-          <div class="container" :class="{'mt-5 pt-3':!print,'':print}">
+          <div class="container" :class="{ 'mt-5 pt-3': !print, '': print }">
             <div id="bobot" v-if="tabs[0]">
               <input
                 type="button"
@@ -61,14 +65,17 @@
                 value="Tambah"
                 @click="addNewBobot"
               />
-              <div v-for="(bbt, index) in bobot" class="row">
+              <div v-for="(bbt, index) in bobot" :key="index" class="row">
                 <div class="mt-3 col">
                   <div class="input-group">
                     <div class="input-group-text">Kriteria</div>
                     <input
                       type="text"
                       class="form-control"
-                      :class="{'is-invalid': checkNumber(bbt.name), '': !checkNumber(bbt.name)}"
+                      :class="{
+                        'is-invalid': checkNumber(bbt.name),
+                        '': !checkNumber(bbt.name),
+                      }"
                       placeholder="Nama Kriteria"
                       v-model="bbt.name"
                     />
@@ -78,13 +85,13 @@
                   <select
                     class="form-select"
                     v-model="bbt.attr"
-                    :class="{'is-invalid': bbt.attr===0, '': bbt.attr!==0}"
+                    :class="{ 'is-invalid': bbt.attr === 0, '': bbt.attr !== 0 }"
                   >
                     <option selected disabled value="0">
                       Pilih Atribut Kriteria
                     </option>
-                    <option :selected="bbt.attr===1" value="1">Biaya</option>
-                    <option :selected="bbt.attr===2" value="2">
+                    <option :selected="bbt.attr === 1" value="1">Biaya</option>
+                    <option :selected="bbt.attr === 2" value="2">
                       Keuntungan
                     </option>
                   </select>
@@ -95,7 +102,10 @@
                     <input
                       type="number"
                       class="form-control"
-                      :class="{'is-invalid': checkNumber(bbt.poin), '': !checkNumber(bbt.poin)}"
+                      :class="{
+                        'is-invalid': checkNumber(bbt.poin),
+                        '': !checkNumber(bbt.poin),
+                      }"
                       placeholder="Poin Bobot"
                       v-model="bbt.poin"
                       min="1"
@@ -121,27 +131,37 @@
                 value="Tambah"
                 @click="addNewAlter"
               />
-              <div v-for="(altr, index) in alter" class="row">
+              <div v-for="(altr, index) in alter" :key="index" class="row">
                 <div class="mt-3 col">
                   <label class="form-label">Alternatif</label>
                   <input
                     type="text"
                     class="form-control"
-                    :class="{'is-invalid': checkNumber(altr.name),'': !checkNumber(altr.name)}"
+                    :class="{
+                      'is-invalid': checkNumber(altr.name),
+                      '': !checkNumber(altr.name),
+                    }"
                     placeholder="Nama Alternatif"
                     v-model="altr.name"
                   />
                 </div>
-                <div class="mt-3 col row" v-for="(bbt, index) in bobot">
+                <div
+                  class="mt-3 col row"
+                  v-for="(bbt, index) in bobot"
+                  :key="index"
+                >
                   <div class="col">
                     <label class="form-label"
-                      >{{ bbt.name ? bbt.name : 'Nilai '+(index+1) }}</label
+                      >{{ bbt.name ? bbt.name : "Nilai " + (index + 1) }}</label
                     >
                     <input
                       type="number"
                       class="form-control"
-                      :class="{'is-invalid': checkNumber(altr.kriteria[index]), '': !checkNumber(altr.kriteria[index])}"
-                      :placeholder="'Nilai '+[bbt.name ? bbt.name : index+1]"
+                      :class="{
+                        'is-invalid': checkNumber(altr.kriteria[index]),
+                        '': !checkNumber(altr.kriteria[index]),
+                      }"
+                      :placeholder="'Nilai ' + [bbt.name ? bbt.name : index + 1]"
                       v-model.number="altr.kriteria[index]"
                       min="1"
                       max="100"
@@ -165,7 +185,7 @@
             >
               Cetak
             </button>
-            <div id="hitung" v-if="tabs[2]" :class="{'mt-3':print}">
+            <div id="hitung" v-if="tabs[2]" :class="{ 'mt-3': print }">
               <h3 class="text-center">Hasil Analisa</h3>
               <table
                 class="table table-sm table-hover table-bordered text-center"
@@ -176,18 +196,22 @@
                     <th :colspan="bobot.length">Kriteria</th>
                   </tr>
                   <tr>
-                    <th v-for="(bbt, index) in bobot">
-                      {{ bbt.name ? bbt.name : 'Nilai '+(index+1) }}
+                    <th v-for="(bbt, index) in bobot" :key="index">
+                      {{ bbt.name ? bbt.name : "Nilai " + (index + 1) }}
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(altr, index) in alter" class="table table-hover">
+                  <tr
+                    v-for="(altr, index) in alter"
+                    :key="index"
+                    class="table table-hover"
+                  >
                     <td>
-                      {{ altr.name ? altr.name : 'Alternatif '+(index+1) }}
+                      {{ altr.name ? altr.name : "Alternatif " + (index + 1) }}
                     </td>
-                    <td v-for="(bbt, ix) in bobot">
-                      {{altr.kriteria[ix] ? altr.kriteria[ix] : 0}}
+                    <td v-for="(bbt, ix) in bobot" :key="ix">
+                      {{ altr.kriteria[ix] ? altr.kriteria[ix] : 0 }}
                     </td>
                   </tr>
                 </tbody>
@@ -202,18 +226,22 @@
                     <th :colspan="bobot.length">Kriteria</th>
                   </tr>
                   <tr>
-                    <th v-for="(bbt, index) in bobot">
-                      {{ bbt.name ? bbt.name : 'Nilai '+(index+1) }}
+                    <th v-for="(bbt, index) in bobot" :key="index">
+                      {{ bbt.name ? bbt.name : "Nilai " + (index + 1) }}
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(altr, index) in alter" class="table table-hover">
+                  <tr
+                    v-for="(altr, index) in alter"
+                    :key="index"
+                    class="table table-hover"
+                  >
                     <td>
-                      {{ altr.name ? altr.name : 'Alternatif '+(index+1) }}
+                      {{ altr.name ? altr.name : "Alternatif " + (index + 1) }}
                     </td>
-                    <td v-for="(bbt, ix) in bobot">
-                      {{ hitungNormal(bbt.attr, altr.kriteria, ix)}}
+                    <td v-for="(bbt, ix) in bobot" :key="ix">
+                      {{ hitungNormal(bbt.attr, altr.kriteria, ix) }}
                     </td>
                   </tr>
                 </tbody>
@@ -230,25 +258,28 @@
                     <th rowspan="2">Ranking</th>
                   </tr>
                   <tr>
-                    <th v-for="(bbt, index) in bobot">
-                      {{ bbt.name ? bbt.name : 'Nilai '+(index+1) }}
+                    <th v-for="(bbt, index) in bobot" :key="index">
+                      {{ bbt.name ? bbt.name : "Nilai " + (index + 1) }}
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr
                     v-for="(altr, index) in alter"
+                    :key="index"
                     class="table table-hover"
-                    :style="altr.rank==1 ? 'font-weight:bold' : 'font-weight:normal'"
+                    :style="
+                      altr.rank == 1 ? 'font-weight:bold' : 'font-weight:normal'
+                    "
                   >
                     <td>
-                      {{ altr.name ? altr.name : 'Alternatif '+(index+1) }}
+                      {{ altr.name ? altr.name : "Alternatif " + (index + 1) }}
                     </td>
-                    <td v-for="(bbt, ix) in bobot">
-                      {{ (hitungNormal(bbt.attr, altr.kriteria, ix) * (bbt.poin
-                      / 100)).toFixed(2)}}
+                    <td v-for="(bbt, ix) in bobot" :key="ix">
+                      {{ ( hitungNormal(bbt.attr, altr.kriteria, ix) * (bbt.poin
+                      / 100) ).toFixed(2) }}
                     </td>
-                    <td>{{ hitungTotal(index).toFixed(3)}}</td>
+                    <td>{{ hitungTotal(index).toFixed(3) }}</td>
                     <td>{{ getRank(index) }}</td>
                   </tr>
                 </tbody>
@@ -257,7 +288,7 @@
                 Jadi berdasarkan Perhitungan di atas, Alternatif terbaik adalah
                 <strong
                   >{{ getHighestRank()[0].name ? getHighestRank()[0].name :
-                  'Alternatif '+(getHighestRank()[1]) }}</strong
+                  "Alternatif " + getHighestRank()[1] }}</strong
                 >
                 dengan total poin
                 <strong>{{ getHighestRank()[0].total }}</strong>.
