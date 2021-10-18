@@ -1,6 +1,10 @@
 new Vue({
   el: "#saw",
   data: {
+    title: {
+      text: "SPK Metode SAW Dengan VueJS",
+      isEdit: false,
+    },
     bobot: [],
     alter: [],
     tabs: [true, false, false],
@@ -21,6 +25,13 @@ new Vue({
     );
   },
   methods: {
+    editTitle: function (data) {
+      this.title.isEdit = data;
+      if (data)
+        this.$nextTick(() => {
+          this.$refs.title.focus();
+        });
+    },
     addNewBobot: function () {
       this.bobot.push({
         name: "",
@@ -131,7 +142,7 @@ new Vue({
     },
   },
 });
-Vue.config.devtools = false;
-Vue.config.debug = false;
-Vue.config.silent = true;
-Vue.config.productionTip = false;
+Vue.config.devtools = !false;
+Vue.config.debug = !false;
+Vue.config.silent = !true;
+Vue.config.productionTip = !false;
